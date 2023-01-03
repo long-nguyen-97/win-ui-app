@@ -41,16 +41,21 @@
                 <labs:SettingsCard x:Name="settingsCard2"
                                Description="As soon as lamps switch is turned on, the controller restarts"
 							   Header="Restart When Lamps Switch On">
-                    <ToggleSwitch IsOn="{x:Bind ViewModel.Config.RestartWhenLampsOn, Mode=TwoWay}"/>
+                    <ToggleSwitch AutomationProperties.AutomationId="restartWhenLampOnSwitch"
+                                  IsOn="{x:Bind ViewModel.Config.RestartWhenLampsOn, Mode=TwoWay}"/>
                 </labs:SettingsCard>
 
                 <labs:SettingsExpander x:Name="settingsCard3"
                                Description="Enable Dimming for Lanterns"
                                Header="Enable Dimming">
-                    <ToggleSwitch x:Name="enableDimmingSwitch" IsOn="{x:Bind ViewModel.Config.EnableDimming, Mode=TwoWay}"/>
+                    <ToggleSwitch x:Name="enableDimmingSwitch"
+                                  AutomationProperties.AutomationId="enableDimmingSwitch"
+                                  IsOn="{x:Bind ViewModel.Config.EnableDimming, Mode=TwoWay}"/>
 
                     <labs:SettingsExpander.Items>
-                        <labs:SettingsCard Header="Dimming Level"
+                        <labs:SettingsCard x:Name="expanderItemCard"
+                                           AutomationProperties.AutomationId="expanderItemCard"
+                                           Header="Dimming Level"
                                            IsEnabled="{Binding ElementName=enableDimmingSwitch, Path=IsOn}">
                             <ComboBox SelectedItem="{x:Bind ViewModel.Config.DimmingLevel, Mode=TwoWay}"
                                   ItemsSource="{x:Bind ViewModel.DimmingLevels}">
@@ -68,7 +73,8 @@
                            Description="Perform Input Mapping"
                            Header="Input Mapping"
                            IsClickEnabled="True"
-                           Command="{x:Bind ViewModel.InputMappingCardClickCommand}">
+                           Command="{x:Bind ViewModel.InputMappingCardClickCommand}"
+                           AutomationProperties.AutomationId="inputMappingCard">
                 </labs:SettingsCard>
             </StackPanel>
         </ScrollViewer>
