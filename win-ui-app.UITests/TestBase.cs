@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
@@ -23,7 +22,7 @@ namespace win_ui_app.UITests
                 session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appiumOptions);
 
             }
-            Thread.Sleep(3000);
+
             session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
         }
 
