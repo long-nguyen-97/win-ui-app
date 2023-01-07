@@ -16,6 +16,7 @@ public class ControllerConfigurationService : IControllerConfigurationService
         _configuration ??= new ControllerConfiguration
         {
             StartupSignal = SignalType.AllRed,
+            StartupSignal2 = SignalType.AllGreen,
             RestartWhenLampsOn = true,
             EnableDimming = true,
             DimmingLevel = DimmingLevel.Level2

@@ -9,6 +9,12 @@ public class ControllerConfiguration
         set;
     }
 
+    public SignalType StartupSignal2
+    {
+        get;
+        set;
+    }
+
     public bool RestartWhenLampsOn
     {
         get;

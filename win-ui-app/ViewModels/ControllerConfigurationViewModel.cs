@@ -1,11 +1,13 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using win_ui_app.Contracts.Services;
 using win_ui_app.Contracts.ViewModels;
 using win_ui_app.Core.Contracts.Services;
 using win_ui_app.Core.Enums;
-using win_ui_app.Core.Models;
+using win_ui_app.Models;
 
 namespace win_ui_app.ViewModels;
 
@@ -13,16 +15,28 @@ public class ControllerConfigurationViewModel : ObservableRecipient, INavigation
 {
     private readonly IControllerConfigurationService _ctrlCfgService;
     private readonly INavigationService _navigationService;
-    private ControllerConfiguration? _config;
 
     public IEnumerable<SignalType> SignalTypes => Enum.GetValues(typeof(SignalType)).OfType<SignalType>().ToList();
 
     public IEnumerable<DimmingLevel> DimmingLevels => Enum.GetValues(typeof(DimmingLevel)).OfType<DimmingLevel>().ToList();
 
-    public ControllerConfiguration? Config
+    public ObservableControllerConfiguration? Config
     {
-        get => _config;
-        set => SetProperty(ref _config, value);
+        get; set;
+    }
+
+    private bool _isValidStartupSignal;
+    public bool IsValidStartupSignal
+    {
+        get => _isValidStartupSignal;
+        set => SetProperty(ref _isValidStartupSignal, value);
+    }
+
+    private bool _isValidStartupSignal2;
+    public bool IsValidStartupSignal2
+    {
+        get => _isValidStartupSignal2;
+        set => SetProperty(ref _isValidStartupSignal2, value);
     }
 
     public ICommand InputMappingCardClickCommand
@@ -36,11 +50,16 @@ public class ControllerConfigurationViewModel : ObservableRecipient, INavigation
         _ctrlCfgService = ctrlCfgService;
 
         InputMappingCardClickCommand = new RelayCommand(OnInputMappingCardClick);
+
+        IsValidStartupSignal = true;
+        IsValidStartupSignal2 = true;
     }
 
     public async void OnNavigatedTo(object parameter)
     {
-        Config = await _ctrlCfgService.GetControllerConfigurationAsync();
+        var config = await _ctrlCfgService.GetControllerConfigurationAsync();
+        Config = new ObservableControllerConfiguration(config);
+        Config.PropertyChanged += OnControllerConfigurationPropertyChanged;
     }
 
     public void OnNavigatedFrom()
@@ -50,5 +69,23 @@ public class ControllerConfigurationViewModel : ObservableRecipient, INavigation
     private void OnInputMappingCardClick()
     {
         _navigationService.NavigateTo(typeof(InputMappingViewModel).FullName!);
+    }
+
+    private void OnControllerConfigurationPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(Config.StartupSignal) || e.PropertyName == nameof(Config.StartupSignal2))
+        {
+            var updatedConfig = sender as ObservableControllerConfiguration;
+            if (updatedConfig?.StartupSignal == updatedConfig?.StartupSignal2)
+            {
+                IsValidStartupSignal = false;
+                IsValidStartupSignal2 = false;
+            }
+            else
+            {
+                IsValidStartupSignal = true;
+                IsValidStartupSignal2 = true;
+            }
+        }
     }
 }
